@@ -62,6 +62,8 @@ const sharedQuerySchema = Joi.object({
   'screenshot.clip.width': Joi.number(),
   'screenshot.clip.height': Joi.number(),
   'screenshot.omitBackground': Joi.boolean(),
+  'selector': Joi.string(),
+  'userAgent': Joi.string()
 });
 
 const renderQuerySchema = Joi.object({
@@ -126,6 +128,8 @@ const renderBodyObject = Joi.object({
     omitBackground: Joi.boolean(),
   }),
   failEarly: Joi.string(),
+  selector: Joi.string(),
+  userAgent: Joi.string(),
 });
 
 const renderBodySchema = Joi.alternatives([

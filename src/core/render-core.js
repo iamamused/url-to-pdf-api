@@ -27,6 +27,8 @@ async function render(_opts = {}) {
       fullPage: true,
     },
     failEarly: false,
+    selector: null,
+    userAgent: null
   }, _opts);
 
   if (_.get(_opts, 'pdf.width') && _.get(_opts, 'pdf.height')) {
@@ -74,6 +76,12 @@ async function render(_opts = {}) {
 
   let data;
   try {
+  
+    if (opts.userAgent && opts.userAgent != null) {
+	    logger.info('Set user agent..');
+		await page.setUserAgent(opts.userAgent)
+	}
+	
     logger.info('Set browser viewport..');
     await page.setViewport(opts.viewport);
     if (opts.emulateScreenMedia) {
@@ -137,15 +145,22 @@ async function render(_opts = {}) {
     if (opts.output === 'pdf') {
       data = await page.pdf(opts.pdf);
     } else {
-      // This is done because puppeteer throws an error if fullPage and clip is used at the same
-      // time even though clip is just empty object {}
-      const screenshotOpts = _.cloneDeep(_.omit(opts.screenshot, ['clip']));
-      const clipContainsSomething = _.some(opts.screenshot.clip, val => !_.isUndefined(val));
-      if (clipContainsSomething) {
-        screenshotOpts.clip = opts.screenshot.clip
-      }
+    
+	  const screenshotOpts = _.cloneDeep(_.omit(opts.screenshot, ['clip']));
+	  const clipContainsSomething = _.some(opts.screenshot.clip, val => !_.isUndefined(val));
+	  if (clipContainsSomething) {
+		screenshotOpts.clip = opts.screenshot.clip
+	  }
 
-      data = await page.screenshot(screenshotOpts);
+      if (opts.selectors && opts.selector != null) {
+		  logger.info('Rendering for selector: ' + opts.selector);
+	      const inputElement = await page.$(opts.selector);
+ 		  data = await inputElement.screenshot();
+      } else {
+		  // This is done because puppeteer throws an error if fullPage and clip is used at the same
+		  // time even though clip is just empty object {}
+		  data = await page.screenshot(screenshotOpts);
+      }
     }
 
   } catch (err) {

@@ -113,6 +113,8 @@ function getOptsFromQuery(query) {
       },
       omitBackground: query['screenshot.omitBackground'],
     },
+    selector: query.selector,
+    userAgent: query.userAgent
   };
   return opts;
 }
