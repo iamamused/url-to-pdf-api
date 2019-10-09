@@ -28,7 +28,11 @@ async function render(_opts = {}) {
     },
     failEarly: false,
     selector: null,
-    userAgent: null
+    userAgent: null,
+	authLogin: null,
+	authUsername: null,
+	authPassword: null
+        
   }, _opts);
 
   if (_.get(_opts, 'pdf.width') && _.get(_opts, 'pdf.height')) {
@@ -100,7 +104,32 @@ async function render(_opts = {}) {
       await page.goto(`data:text/html;charset=UTF-8,${opts.html}`, opts.goto);
     } else {
       logger.info(`Goto url ${opts.url} ..`);
-      await page.goto(opts.url, opts.goto);
+      
+      if (opts.authLogin && opts.authUsername && opts.authPassword) {
+      	const url = opts.login.replace("%REDIRECT%",encodeURI(opts.url))
+		await page.goto(url);
+
+		var navigationPromise = page.waitForNavigation()
+
+		await page.waitForSelector('#username')
+		await page.type('#username', opts.authUsername, { visible: true })
+		await page.waitForSelector('#password', { visible: true })
+		await page.type('#password',opts.authPassword)
+
+		await page.waitForSelector('input[name="login"]', { visible: true })
+		await page.click('input[name="login"]')
+		
+		navigationPromise = page.waitForNavigation()
+		await navigationPromise
+
+		// await page.evaluate(() => {
+// 		   location.reload(true)
+// 		})
+	  } 
+	    
+	  await page.goto(opts.url, opts.goto);
+	  
+      
     }
 
     if (_.isNumber(opts.waitFor) || _.isString(opts.waitFor)) {

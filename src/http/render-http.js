@@ -114,7 +114,10 @@ function getOptsFromQuery(query) {
       omitBackground: query['screenshot.omitBackground'],
     },
     selector: query.selector,
-    userAgent: query.userAgent
+    userAgent: query.userAgent,
+    authLogin: query.userAgent,
+    authUsername: query.userAgent,
+    authPassword: query.userAgent
   };
   return opts;
 }
