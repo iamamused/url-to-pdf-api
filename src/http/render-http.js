@@ -115,9 +115,9 @@ function getOptsFromQuery(query) {
     },
     selector: query.selector,
     userAgent: query.userAgent,
-    authLogin: query.userAgent,
-    authUsername: query.userAgent,
-    authPassword: query.userAgent
+    authLogin: query.authLogin,
+    authUsername: query.authUsername,
+    authPassword: query.authPassword
   };
   return opts;
 }

@@ -106,7 +106,7 @@ async function render(_opts = {}) {
       logger.info(`Goto url ${opts.url} ..`);
       
       if (opts.authLogin && opts.authUsername && opts.authPassword) {
-      	const url = opts.login.replace("%REDIRECT%",encodeURI(opts.url))
+      	const url = opts.authLogin.replace("%REDIRECT%",encodeURI(opts.url))
 		await page.goto(url);
 
 		var navigationPromise = page.waitForNavigation()
